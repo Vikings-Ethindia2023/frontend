@@ -5,11 +5,14 @@ import "./App.css";
 import { MetaMaskButton } from "@metamask/sdk-react-ui";
 import CreateProject from "./pages/CreateProject";
 import { useAccount, useConnect, useEnsName } from "wagmi";
+import { Routes, Route, Link } from "react-router-dom";
+import Mint from "./pages/Mint";
+import AllProjects from "./pages/AllProjects";
 
 const routes = [
   {
     title: "Add Project",
-    link: "/new",
+    link: "/",
   },
   {
     title: "Mint Hive Token",
@@ -17,7 +20,11 @@ const routes = [
   },
   {
     title: "All Projects",
-    link: "/mint",
+    link: "/all",
+  },
+  {
+    title: "Games",
+    link: "/game",
   },
 ];
 
@@ -40,13 +47,17 @@ const Navbar = () => {
           {routes.map(({ title, link }, index) => {
             return (
               <div className="flex items-center justify-start my-2 p-4 text-sm w-full hover:text-white">
-                {title}
+                <Link to={link}>{title}</Link>
               </div>
             );
           })}
         </div>
         <div className="w-max p-4">
-          <CreateProject />
+          <Routes>
+            <Route path="/" element={<CreateProject />} />
+            <Route path="mint" element={<Mint />} />
+            <Route path="all" element={<AllProjects />} />
+          </Routes>
         </div>
       </div>
     </div>

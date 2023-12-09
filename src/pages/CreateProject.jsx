@@ -3,12 +3,15 @@ import React, { useState } from "react";
 import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import { NFTStorage, File } from "nft.storage";
 import { ToastContainer, toast } from "react-toastify";
+import { usePrepareContractWrite, useContractWrite } from "wagmi";
 
 const NFT_STORAGE_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDIzMTY2OTQwMDFmMzNFNTRDMUMxYWJEYjkwNjMzNDQxODc3NmMxYzEiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTcwMjE0OTMzNzc1MiwibmFtZSI6ImV0aGluZGlhMjAyMyJ9.3WkY8i5g5ICvUFzxTkTa9GjFGgn56IApkfz76pfonDg";
 
 export default function CreateProject() {
   const [formData, setFormData] = useState({});
+  const [fileUrl, setFileUrl] = useState();
+
   const handleChange = (key, val) => {
     setFormData((e) => ({ ...e, [key]: val }));
   };
@@ -21,15 +24,26 @@ export default function CreateProject() {
     address: "0xc1Db25CdC56933C18d5BeAe1A61044c7bb87C63B",
     abi: [
       {
-        name: "mint",
-        type: "function",
-        stateMutability: "nonpayable",
-        inputs: [],
+        inputs: [
+          { internalType: "uint256", name: "payoutAmount", type: "uint256" },
+          {
+            internalType: "uint256",
+            name: "investmentAmount",
+            type: "uint256",
+          },
+          { internalType: "string", name: "metadata", type: "string" },
+        ],
+        name: "CreateHiveProject",
         outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
       },
     ],
-    functionName: "mint",
+    functionName: "CreateHiveProject",
+    args: [formData.payoutAmount, formData.invAmount, fileUrl],
   });
+  const { write } = useContractWrite(config);
+
   const uploadData = async () => {
     const image = file;
 
@@ -44,8 +58,9 @@ export default function CreateProject() {
       description,
       test: "Hallo",
     });
-    console.log(k);
-    toast("Wow so easy!");
+    setFileUrl(k.url);
+    toast.success("File Uploaded, signing txn");
+    write();
   };
   return (
     <div>
