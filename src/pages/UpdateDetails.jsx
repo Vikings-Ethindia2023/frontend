@@ -8,36 +8,9 @@ import { usePrepareContractWrite, useContractWrite } from "wagmi";
 const NFT_STORAGE_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDIzMTY2OTQwMDFmMzNFNTRDMUMxYWJEYjkwNjMzNDQxODc3NmMxYzEiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTcwMjE0OTMzNzc1MiwibmFtZSI6ImV0aGluZGlhMjAyMyJ9.3WkY8i5g5ICvUFzxTkTa9GjFGgn56IApkfz76pfonDg";
 
-export default function CreateProject() {
+export default function UpdateDetails() {
   const [formData, setFormData] = useState({});
   const [fileUrl, setFileUrl] = useState();
-  const [gasData, setGasData] = useState({
-    low: {
-      suggestedMaxPriorityFeePerGas: "0.05",
-      suggestedMaxFeePerGas: "16.334026964",
-      minWaitTimeEstimate: 15000,
-      maxWaitTimeEstimate: 30000,
-    },
-    medium: {
-      suggestedMaxPriorityFeePerGas: "0.1",
-      suggestedMaxFeePerGas: "22.083436402",
-      minWaitTimeEstimate: 15000,
-      maxWaitTimeEstimate: 45000,
-    },
-    high: {
-      suggestedMaxPriorityFeePerGas: "0.3",
-      suggestedMaxFeePerGas: "27.982845839",
-      minWaitTimeEstimate: 15000,
-      maxWaitTimeEstimate: 60000,
-    },
-    estimatedBaseFee: "16.284026964",
-    networkCongestion: 0.5125,
-    latestPriorityFeeRange: ["0", "3"],
-    historicalPriorityFeeRange: ["0.000000001", "89"],
-    historicalBaseFeeRange: ["13.773088584", "29.912845463"],
-    priorityFeeTrend: "down",
-    baseFeeTrend: "up",
-  });
 
   const handleChange = (key, val) => {
     setFormData((e) => ({ ...e, [key]: val }));
@@ -89,37 +62,37 @@ export default function CreateProject() {
     toast.success("File Uploaded, signing txn");
     write();
   };
+
   return (
-    <div>
+    <form>
       <div className="space-y-12">
         <div className="border-b border-gray-900/10 pb-12">
           <h2 className="text-base font-semibold leading-7 text-gray-900">
-            New Project details
+            Profile
           </h2>
           <p className="mt-1 text-sm leading-6 text-gray-600">
-            This information will be displayed publicly to investors and
-            subjects. Be as descriptive as possible
+            This information will be displayed publicly so be careful what you
+            share.
           </p>
 
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div className="sm:col-span-4">
               <label
-                htmlFor="ProjectName"
+                htmlFor="username"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Project Name
+                Username
               </label>
               <div className="mt-2">
                 <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
                   <input
-                    value={formData?.name}
-                    onChange={(e) => handleChange("name", e.target.value)}
                     type="text"
-                    name="ProjectName"
-                    id="ProjectName"
-                    autoComplete="ProjectName"
+                    name="username"
+                    id="username"
+                    value={"acadia"}
+                    autoComplete="username"
                     className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                    placeholder="My Awesome Research Project"
+                    placeholder="janesmith"
                   />
                 </div>
               </div>
@@ -130,22 +103,41 @@ export default function CreateProject() {
                 htmlFor="about"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Description
+                About
               </label>
               <div className="mt-2">
                 <textarea
                   id="about"
                   name="about"
-                  value={formData?.description}
-                  onChange={(e) => handleChange("description", e.target.value)}
                   rows={3}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   defaultValue={""}
                 />
               </div>
               <p className="mt-3 text-sm leading-6 text-gray-600">
-                Write a few sentences about the project. Provide all links
+                Write a few sentences about yourself.
               </p>
+            </div>
+
+            <div className="col-span-full">
+              <label
+                htmlFor="photo"
+                className="block text-sm font-medium leading-6 text-gray-900"
+              >
+                Photo
+              </label>
+              <div className="mt-2 flex items-center gap-x-3">
+                <UserCircleIcon
+                  className="h-12 w-12 text-gray-300"
+                  aria-hidden="true"
+                />
+                <button
+                  type="button"
+                  className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                >
+                  Change
+                </button>
+              </div>
             </div>
 
             <div className="col-span-full">
@@ -172,7 +164,6 @@ export default function CreateProject() {
                         name="file-upload"
                         type="file"
                         className="sr-only"
-                        onChange={handleFileChange}
                       />
                     </label>
                     <p className="pl-1">or drag and drop</p>
@@ -188,28 +179,46 @@ export default function CreateProject() {
 
         <div className="border-b border-gray-900/10 pb-12">
           <h2 className="text-base font-semibold leading-7 text-gray-900">
-            Project payout details
+            Personal Information
           </h2>
           <p className="mt-1 text-sm leading-6 text-gray-600">
-            Add more details about your research project
+            Use a permanent address where you can receive mail.
           </p>
 
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-            <div className="sm:col-span-4">
+            <div className="sm:col-span-3">
               <label
-                htmlFor="inv-amount"
+                htmlFor="first-name"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Minimum Investment Amount (HKT tokens)
+                First name
               </label>
               <div className="mt-2">
                 <input
-                  type="number"
-                  name="inv-amount"
-                  id="inv-amount"
-                  value={formData?.invAmount}
-                  onChange={(e) => handleChange("invAmount", e.target.value)}
-                  autoComplete="inv-amount"
+                  value={"Anshuman"}
+                  type="text"
+                  name="first-name"
+                  id="first-name"
+                  autoComplete="given-name"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+              </div>
+            </div>
+
+            <div className="sm:col-span-3">
+              <label
+                htmlFor="last-name"
+                className="block text-sm font-medium leading-6 text-gray-900"
+              >
+                Last name
+              </label>
+              <div className="mt-2">
+                <input
+                  value={"Singh"}
+                  type="text"
+                  name="last-name"
+                  id="last-name"
+                  autoComplete="family-name"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -217,19 +226,54 @@ export default function CreateProject() {
 
             <div className="sm:col-span-4">
               <label
-                htmlFor="inv-amount"
+                htmlFor="email"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Payout Amount (HKT Tokens sent out to users for submitting data)
+                Email address
               </label>
               <div className="mt-2">
                 <input
-                  type="number"
-                  name="inv-amount"
-                  id="inv-amount"
-                  value={formData?.payoutAmount}
-                  onChange={(e) => handleChange("payoutAmount", e.target.value)}
-                  autoComplete="inv-amount"
+                  value={"acadia@mail.com"}
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+              </div>
+            </div>
+            <div className="sm:col-span-4">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium leading-6 text-gray-900"
+              >
+                Date of Birth
+              </label>
+              <div className="mt-2">
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={"25/03/2000"}
+                  autoComplete="email"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+              </div>
+            </div>
+            <div className="sm:col-span-4">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium leading-6 text-gray-900"
+              >
+                Gender
+              </label>
+              <div className="mt-2">
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  value={"Male"}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -240,72 +284,21 @@ export default function CreateProject() {
                 htmlFor="country"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Filter Criteria: Age (Minimum Age to participate)
+                Country
               </label>
               <div className="mt-2">
-                <input
-                  type="number"
-                  name="inv-amount"
-                  id="age-amount"
-                  value={formData?.ageCriteria}
-                  onChange={(e) => handleChange("ageCriteria", e.target.value)}
-                  autoComplete="age-amount"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
+                <select
+                  id="country"
+                  name="country"
+                  autoComplete="country-name"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                >
+                  <option>United States</option>
+                  <option>Canada</option>
+                  <option>Mexico</option>
+                </select>
               </div>
             </div>
-          </div>
-          <label
-            htmlFor="country"
-            className="block text-sm font-medium leading-6 text-gray-900"
-          >
-            More Filter Criterias coming soon!
-          </label>
-        </div>
-
-        <div className="border-b border-gray-900/10 pb-12">
-          <div className="mt-10 space-y-10">
-            <fieldset>
-              <legend className="text-sm font-semibold leading-6 text-gray-900">
-                Data Metric type
-              </legend>
-              <p className="mt-1 text-sm leading-6 text-gray-600">
-                Select whether the data would require Personal identification or
-                would be used anonymously
-              </p>
-              <div className="mt-6 space-y-6">
-                <div className="flex items-center gap-x-3">
-                  <input
-                    id="push-everything"
-                    name="push-notifications"
-                    type="radio"
-                    className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                  />
-                  <label
-                    htmlFor="push-everything"
-                    className="block text-sm font-medium leading-6 text-gray-900"
-                  >
-                    Personal - Data would be shared along with your personal
-                    identification
-                  </label>
-                </div>
-                <div className="flex items-center gap-x-3">
-                  <input
-                    id="push-email"
-                    name="push-notifications"
-                    type="radio"
-                    className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                  />
-                  <label
-                    htmlFor="push-email"
-                    className="block text-sm font-medium leading-6 text-gray-900"
-                  >
-                    Anonymously (Aggregated) - Data would be shared as an
-                    aggregate over a metric (such as age, gender, etc)
-                  </label>
-                </div>
-              </div>
-            </fieldset>
           </div>
         </div>
       </div>
@@ -318,15 +311,12 @@ export default function CreateProject() {
           Cancel
         </button>
         <button
-          onClick={uploadData}
+          type="submit"
           className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
           Save
         </button>
       </div>
-      <div className="text-black text-xs text-right whitespace-pre-wrap">
-        {JSON.stringify(gasData)}
-      </div>
-    </div>
+    </form>
   );
 }

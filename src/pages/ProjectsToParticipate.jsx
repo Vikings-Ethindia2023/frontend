@@ -4,7 +4,7 @@ import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import { NFTStorage, File } from "nft.storage";
 import { ToastContainer, toast } from "react-toastify";
 import { usePrepareContractWrite, useContractWrite } from "wagmi";
-function AllProjects() {
+function ProjectsToParticipate() {
   const { config } = usePrepareContractWrite({
     address: "0x761bf9f599b2c2a03faf02e7a3c9259bb5e238a7",
     abi: [
@@ -20,10 +20,14 @@ function AllProjects() {
     value: "100000000",
   });
   const { write } = useContractWrite(config);
+  const kkk = async () => {
+    await write();
+    toast.success("Data submitted successfully");
+  };
 
   return (
     <div className="text-black">
-      <h1 className="text-3xl font-bold">All Projects</h1>
+      <h1 className="text-3xl font-bold">Ongoing Projects</h1>
       <br />
       <br />
       <div className="grid grid-cols-2 space-x-4">
@@ -41,14 +45,15 @@ function AllProjects() {
               This study is to explore the effect of running on average heart
               rate during run and througout the day
               <br />
-              <p className="text-white">Minimum Investment Amount: 50 HKT</p>
+              <p className="text-white">Payout Amount: 50 HKT</p>
             </p>
 
             <a
+              onClick={write}
               href="#"
               class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             >
-              Invest
+              Submit Data
               <svg
                 class="rtl:rotate-180 w-3.5 h-3.5 ms-2"
                 aria-hidden="true"
@@ -88,7 +93,7 @@ function AllProjects() {
               href="#"
               class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             >
-              Invest
+              (Data not recorded yet!)
               <svg
                 class="rtl:rotate-180 w-3.5 h-3.5 ms-2"
                 aria-hidden="true"
@@ -112,4 +117,4 @@ function AllProjects() {
   );
 }
 
-export default AllProjects;
+export default ProjectsToParticipate;

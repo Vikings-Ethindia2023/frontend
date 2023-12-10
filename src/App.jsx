@@ -8,6 +8,10 @@ import { useAccount, useConnect, useEnsName } from "wagmi";
 import { Routes, Route, Link } from "react-router-dom";
 import Mint from "./pages/Mint";
 import AllProjects from "./pages/AllProjects";
+import Game from "./pages/Game";
+import UpdateDetails from "./pages/UpdateDetails";
+import ProjectsToParticipate from "./pages/ProjectsToParticipate";
+import Notifications from "./pages/Notifications";
 
 const routes = [
   {
@@ -25,6 +29,18 @@ const routes = [
   {
     title: "Games",
     link: "/game",
+  },
+  {
+    title: "Notifications",
+    link: "/notifications",
+  },
+  {
+    title: "Update Profile/View Data",
+    link: "/myprofile",
+  },
+  {
+    title: "Projects to Participate",
+    link: "/participate",
   },
 ];
 
@@ -57,6 +73,10 @@ const Navbar = () => {
             <Route path="/" element={<CreateProject />} />
             <Route path="mint" element={<Mint />} />
             <Route path="all" element={<AllProjects />} />
+            <Route path="game" element={<Game />} />
+            <Route path="myprofile" element={<UpdateDetails />} />
+            <Route path="participate" element={<ProjectsToParticipate />} />
+            <Route path="notifications" element={<Notifications />} />
           </Routes>
         </div>
       </div>

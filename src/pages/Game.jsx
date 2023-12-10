@@ -1,10 +1,64 @@
+import React, { useState, useEffect } from "react";
+import "./game.css";
+import {
+  createLightNode,
+  waitForRemotePeer,
+  createEncoder,
+  createDecoder,
+} from "@waku/sdk";
+import { useSignMessage } from "wagmi";
+import { ToastContainer, toast } from "react-toastify";
+
+import protobuf from "protobufjs";
+
 const SYMBOLS = ["@", "#", "$", "%"];
 
 const Game = () => {
+  const {
+    data: signMessageData,
+    error,
+    isLoading,
+    signMessage,
+    variables,
+  } = useSignMessage();
+
   const [board, setBoard] = useState([]);
   const [gameStarted, setGameStarted] = useState(false);
   const [activeOpenedItems, setActiveOpeningItems] = useState([]);
   const [clicks, setClicks] = useState(0);
+  const contentTopic =
+    "/healthlive/1/0x258FB6154078A2E3fffE19fA3982E6BBA5F8915f";
+  const signAndPublish = async () => {
+    const node = await createLightNode({ defaultBootstrap: true });
+    await node.start();
+    await waitForRemotePeer(node);
+    const encoder = createEncoder({ contentTopic });
+    const decoder = createDecoder(contentTopic);
+    const DataPoint = new protobuf.Type("DataPoint")
+      .add(new protobuf.Field("timestamp", 1, "uint64"))
+      .add(new protobuf.Field("sender", 2, "string"))
+      .add(new protobuf.Field("steps", 3, "string"));
+    const protoMessage = DataPoint.create({
+      timestamp: Date.now(),
+      sender: "0x258FB6154078A2E3fffE19fA3982E6BBA5F8915f",
+      steps: clicks,
+    });
+    await signMessage({ message: JSON.stringify(protoMessage.toJSON()) });
+    const protoMessage2 = DataPoint.create({
+      timestamp: Date.now(),
+      sender: "0x258FB6154078A2E3fffE19fA3982E6BBA5F8915f",
+      steps: signMessageData,
+    });
+    const serialisedMessage = DataPoint.encode(protoMessage2).finish();
+    // toast.success("Data captured and pushed")
+
+    // Send the message using Light Push
+    await node.lightPush.send(encoder, {
+      payload: serialisedMessage,
+    });
+    toast.success("Data captured and pushed");
+  };
+
   const getNewBoard = () => {
     const l = [...SYMBOLS, ...SYMBOLS];
     l.sort(function (a, b) {
@@ -85,7 +139,7 @@ const Game = () => {
     board.length > 0 &&
     board.filter((b) => b.isMatched).length === board.length;
   return (
-    <div className="game-container">
+    <div className="game-container text-black">
       <div className="game-container-btn">
         <button onClick={onBtnClick} className="">
           {gameStarted ? "Reset" : "New"}
@@ -109,6 +163,11 @@ const Game = () => {
       <div className="game-board-score">
         {finished ? `Finished in ${clicks} steps` : `${clicks} steps`}
       </div>
+      {finished && (
+        <div className="game-container-btn">
+          <button onClick={signAndPublish}>Submit</button>
+        </div>
+      )}
     </div>
   );
 };
